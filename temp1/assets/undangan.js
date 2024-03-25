@@ -2,9 +2,19 @@ $(document).ready(function () {
 
     const path = window.location.pathname;
     const pathElements = path.split('/');
-
-    const code = pathElements[1];
-    const slug = pathElements[2];
+    
+    let code = '';
+    let slug = '';
+    
+    if (path.includes('preview')) {
+        // If path contains "preview", adjust the indexes
+        code = pathElements[3];
+        slug = pathElements[4];
+    } else {
+        // Otherwise, use the original indexes
+        code = pathElements[1];
+        slug = pathElements[2];
+    }
 
     var meta = $('meta#url')
     var base_url = meta.attr('base_url')
@@ -346,6 +356,83 @@ $(document).ready(function () {
         base_wallet_info.html(wallet_info)
     }
 
+    function fetchRsvp(response) {
+        let rsvpData = response.undangan.rsvp_setting;
+        let form = $('#form_rsvp');
+    
+        // Clear existing form elements
+        form.empty();
+    
+        // Loop through rsvp setting data
+        rsvpData.forEach(setting => {
+            let inputElement;
+            switch (setting.element) {
+                case 'select':
+                    inputElement = $('<select>', {
+                        name: setting.field_name,
+                        id: setting.field_name,
+                        class: 'form-control',
+                        required: true
+                    });
+    
+                    try {
+                        let options = JSON.parse(JSON.parse(setting.options));
+    
+                        console.log(options);
+    
+                        // Check if options is an array
+                        if (!Array.isArray(options)) {
+                            throw new Error('Parsed options is not an array');
+                        }
+    
+                        options.forEach(option => {
+                            inputElement.append($('<option>', {
+                                value: option.value,
+                                text: option.label
+                            }));
+                        });
+                    } catch (error) {
+                        console.error('Error parsing or processing options:', error);
+                    }
+                    break;
+                case 'textarea':
+                    inputElement = $('<textarea>', {
+                        name: setting.field_name,
+                        id: setting.field_name,
+                        class: 'form-control',
+                        placeholder: setting.label,
+                        required: true
+                    });
+                    break;
+                case 'input_text':
+                    inputElement = $('<input>', {
+                        type: 'text',
+                        name: setting.field_name,
+                        id: setting.field_name,
+                        class: 'form-control',
+                        placeholder: setting.label,
+                        required: true
+                    });
+                    break;
+                default:
+                    break;
+            }
+    
+            // Append input element to form
+            form.append($('<div>').append(inputElement));
+        });
+    }
+    
+    
+    
+
+    function fetchCovidProtocol(response) {
+        let undangan = response.undangan
+        if (undangan.page_setting.fitur_covid == 'no') {
+            $('#covid').addClass('d-none')
+        }
+    }
+        
     $.ajax({
         url: backand_url + `/undangan/${code}/${slug}`,
         method: 'get',
@@ -359,6 +446,8 @@ $(document).ready(function () {
             fetch_acara(response)
             fetch_ucapan()
             fetch_wallet(response)
+            fetchRsvp(response)
+            fetchCovidProtocol(response)
         },
         error: function (response) {
             alertify.error('Terjadi kesalahan');
@@ -405,11 +494,19 @@ $(document).ready(function () {
                 }
             },
             complete: function () {
-                $('#send_btn_ucapan').html('Kirim')
+                $('#send_btn_rsvp').html('Kirim')
             }
         })
     }
 
+    $('#form_rsvp').find('#status_hadir').change(function () {
+        let val = $(this).val()
+        if (val == 'no') {
+            $('#form_rsvp').find('#alasan').removeClass('d-none')
+        } else {
+            $('#form_rsvp').find('#alasan').addClass('d-none').text('')
+        }
+    })
 
     $('#form_ucapan').find('#status_hadir').change(function () {
         let val = $(this).val()
@@ -436,17 +533,6 @@ $(document).ready(function () {
         let field_wakil_dari = form.find('#wakil_dari').val()
         let field_link_sosmed = form.find('#link_sosmed').val()
         let field_pesan = form.find('#pesan').val()
-        let field_status_kehadiran = form.find('#status_hadir').val()
-        let field_alasan = form.find('#alasan').val()
-
-        if (field_pesan == '') {
-            alertify.error('Isi pesan singkat');
-            return false
-        }
-        if (field_status_kehadiran == '') {
-            alertify.error('Isi status kehadiran');
-            return false
-        }
 
 
         let data_ucapan = {
@@ -457,12 +543,6 @@ $(document).ready(function () {
             pesan: field_pesan
         }
 
-        let data_kehadiran = {
-            undangan_id: undangan.id,
-            nama_pengirim: response.nama_penerima,
-            status_hadir: field_status_kehadiran,
-            alasan: field_alasan
-        }
 
         $(this).html(`<span class="spinner-border spinner-border-sm"
                       role="status"
@@ -470,17 +550,77 @@ $(document).ready(function () {
                       </span>`)
 
         kirim_ucapan(data_ucapan)
-        kirim_kehadiran(data_kehadiran)
 
         //clear form
         form.find('#wakil_dari').val('')
         form.find('#link_sosmed').val('')
         form.find('#pesan').val('')
-        form.find('#status_hadir').val('yes')
-        form.find('#alasan').val('')
+
+
 
     })
 
+    $('#send_btn_rsvp').click(function () {
+        let form = $('#form_rsvp');
+        let response = JSON.parse(localStorage.getItem('response'));
+        let undangan = response.undangan;
+    
+        let nama_pengirim = '';
+        $(undangan.bagikan_ke).each(function (index, bagikan) {
+            if (bagikan.slug == slug) {
+                nama_pengirim = bagikan.nama_pengirim;
+            }
+        });
+    
+        let data = {
+            undangan_id: undangan.id,
+            nama_pengirim: response.nama_penerima,
+        };
+    
+        // Iterate over rsvp_setting to get form data
+        $(undangan.rsvp_setting).each(function (index, setting) {
+            let field_value;
+            switch (setting.field_name) {
+                case 'status_hadir':
+                    field_value = form.find('#status_hadir').val();
+                    break;
+                case 'pesan':
+                    field_value = form.find('#pesan').val();
+                    break;
+                case 'alasan':
+                    field_value = form.find('#alasan').val();
+                    break;
+                case 'jumlah_tamu':
+                    field_value = form.find('#jumlah_tamu').val();
+                    break;
+                default:
+                    break;
+            }
+    
+            // Validate if field is required
+            if (field_value === '' && setting.field_name !== 'pesan' && setting.field_name !== 'alasan') {
+                alertify.error('Isi ' + setting.label);
+                return false;
+            }
+    
+            // Assign field value to data object
+            data[setting.field_name] = field_value;
+        });
+    
+        $(this).html(`<span class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true">
+                      </span>`);
+    
+        kirim_kehadiran(data);
+    
+        // Clear form
+        form.find('#jumlah_tamu').val('');
+        form.find('#pesan').val('');
+        form.find('#status_hadir').val('yes');
+        form.find('#alasan').val('');
+    });
+    
 
 
     //amplop
