@@ -513,13 +513,20 @@ $(document).ready(function () {
         })
     }
 
-    function kirim_kehadiran(data) {
+    function kirim_kehadiran(data,btn) {
         $.ajax({
             url: backand_url + '/udg/kehadiran',
             data: data,
             method: 'post',
+            beforeSend: function(){
+                btn.html(`<span class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true">
+                </span>`);
+            },
             success: function (response) {
                 alertify.success('Berhasil mengirim kehadiran');
+                btn.html('Kirim')
             },
             error: function (response) {
                 if (response.status == 422) {
@@ -527,9 +534,11 @@ $(document).ready(function () {
                 } else {
                     alertify.error('Gagal mengirim ucapan');
                 }
+                btn.html('Kirim')
             },
             complete: function () {
                 $('#send_btn_ucapan').html('Kirim')
+                btn.html('Kirim')
             }
         })
     }
@@ -653,6 +662,62 @@ $(document).ready(function () {
             }
         })
     })
+
+    $('#send_btn_rsvp').click(function () {
+        let form = $('#form_rsvp');
+        let response = JSON.parse(localStorage.getItem('response'));
+        let undangan = response.undangan;
+    
+        let nama_pengirim = '';
+        $(undangan.bagikan_ke).each(function (index, bagikan) {
+            if (bagikan.slug == slug) {
+                nama_pengirim = bagikan.nama_pengirim;
+            }
+        });
+    
+        let data = {
+            undangan_id: undangan.id,
+            nama_pengirim: response.nama_penerima,
+        };
+    
+        // Iterate over rsvp_setting to get form data
+        $(undangan.rsvp_setting).each(function (index, setting) {
+            let field_value;
+            switch (setting.field_name) {
+                case 'status_hadir':
+                    field_value = form.find('#status_hadir').val();
+                    break;
+                case 'pesan':
+                    field_value = form.find('#pesan').val();
+                    break;
+                case 'alasan':
+                    field_value = form.find('#alasan').val();
+                    break;
+                case 'jumlah_tamu':
+                    field_value = form.find('#jumlah_tamu').val();
+                    break;
+                default:
+                    break;
+            }
+    
+            // Validate if field is required
+            if (field_value === '' && setting.field_name !== 'pesan' && setting.field_name !== 'alasan') {
+                alertify.error('Isi ' + setting.label);
+                return false;
+            }
+    
+            // Assign field value to data object
+            data[setting.field_name] = field_value;
+        });
+    
+        kirim_kehadiran(data,$(this));
+    
+        // Clear form
+        form.find('#jumlah_tamu').val('');
+        form.find('#pesan').val('');
+        form.find('#status_hadir').val('yes');
+        form.find('#alasan').val('');
+    });
 
 
     //music
