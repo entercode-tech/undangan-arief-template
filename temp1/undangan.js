@@ -388,6 +388,83 @@ $(document).ready(function () {
         console.log(page_setting);
     }
 
+    function fetchRsvp(response) {
+        let rsvpData = response.undangan.rsvp_setting;
+        let form = $('#form_rsvp');
+    
+        // Clear existing form elements
+        form.empty();
+    
+        // Loop through rsvp setting data
+        rsvpData.forEach(setting => {
+            let inputElement;
+            switch (setting.element) {
+                case 'select':
+                    inputElement = $('<select>', {
+                        name: setting.field_name,
+                        id: setting.field_name,
+                        class: 'form-control',
+                        required: true
+                    });
+    
+                    try {
+                        let options = JSON.parse(JSON.parse(setting.options));
+    
+                        console.log(options);
+    
+                        // Check if options is an array
+                        if (!Array.isArray(options)) {
+                            throw new Error('Parsed options is not an array');
+                        }
+    
+                        options.forEach(option => {
+                            inputElement.append($('<option>', {
+                                value: option.value,
+                                text: option.label
+                            }));
+                        });
+                    } catch (error) {
+                        console.error('Error parsing or processing options:', error);
+                    }
+                    break;
+                case 'textarea':
+                    inputElement = $('<textarea>', {
+                        name: setting.field_name,
+                        id: setting.field_name,
+                        class: 'form-control',
+                        placeholder: setting.label,
+                        required: true
+                    });
+                    break;
+                case 'input_text':
+                    inputElement = $('<input>', {
+                        type: 'text',
+                        name: setting.field_name,
+                        id: setting.field_name,
+                        class: 'form-control',
+                        placeholder: setting.label,
+                        required: true
+                    });
+                    break;
+                default:
+                    break;
+            }
+    
+            // Append input element to form
+            form.append($('<div>').append(inputElement));
+        });
+    }
+    
+    
+    
+
+    function fetchCovidProtocol(response) {
+        let undangan = response.undangan
+        if (undangan.page_setting.fitur_covid == 'no') {
+            $('#covid').addClass('d-none')
+        }
+    }
+
 
     $.ajax({
         url: backand_url + `/undangan/${code}/${slug}`,
@@ -404,6 +481,8 @@ $(document).ready(function () {
             fetch_ucapan()
             fetch_wallet(response)
             fetch_section(response)
+            fetchRsvp(response)
+            fetchCovidProtocol(response)
         },
         error: function (response) {
             alertify.error('Terjadi kesalahan');
