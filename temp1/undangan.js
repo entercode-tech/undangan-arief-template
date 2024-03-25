@@ -28,6 +28,22 @@ $(document).ready(function () {
         return hasil;
     }
 
+    function traverseAndProcess(obj) {
+        const output = {};
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const value = obj[key];
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    output[key] = traverseAndProcess(value);
+                } else {
+                    output[key] = value;
+                }
+            }
+        }
+        return output;
+    }
+
+
     function fetch_meta(response) {
         let undangan = response.undangan
         let pengantin = undangan.pengantin
@@ -40,7 +56,7 @@ $(document).ready(function () {
                 pengantin_perempuan = pengantin.nama_panggilan
             }
         });
-        $('#page_title').text(pengantin_laki_laki + ' & ' + pengantin_perempuan)
+        $('.page_title').text(pengantin_laki_laki + ' & ' + pengantin_perempuan)
         $('#favicon').attr('href', undangan.foto_sampul)
     }
 
@@ -94,7 +110,7 @@ $(document).ready(function () {
                 .latar_belakang)
 
             if (pengantin.sosmeds.length) {
-                let smd =``
+                let smd = ``
                 $(pengantin.sosmeds).each(function (i, sosmed) {
                     smd += `
                     <li><a href="${sosmed.link}"><i class="ti-${sosmed.jenis}"></i></a></li>
@@ -151,12 +167,12 @@ $(document).ready(function () {
                                 </div>
                                 <div class="wpo-story-content">
                                     <div class="wpo-story-content-inner">
-                                        <span><img src="assets/images/story/2.png" alt=""></span>
+                                        <span><img src="${base_url}/images/story/2.png" alt=""></span>
                                         <h2>${story.judul}</h2>
                                         <span>${story.dari_tahun} - ${story.sampai_tahun}</span>
                                         <p>${story.cerita}</p>
                                         <div class="border-shape">
-                                            <img src="assets/images/story/shape.jpg" alt="">
+                                            <img src="${base_url}/images/story/shape.jpg" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -271,12 +287,19 @@ $(document).ready(function () {
                         <div class="wpo-event-text">
                             <h2>${acara.nama_acara}</h2>
                             <ul>
-                                <li>${ubahFormatTanggal(acara.tanggal)}</li>
-                                <li>${acara.alamat}</li>
+                                <li>${ubahFormatTanggal(acara.tanggal)}</li>`
 
-                                <li> <a class="popup-gmaps"
-                                        href="${acara.link_map}">Lihat Lokasi</a></li>
-                            </ul>
+
+            if (acara.alamat != null) {
+                content += `<li>${acara.alamat}</li>`
+            }
+            if (acara.link_map != null) {
+                content += `<li> <a class="popup-gmaps"
+                                        href="${acara.link_map}">Lihat Lokasi</a></li>`
+            }
+
+
+            content += `</ul>
                         </div>
                     </div>
                 </div>
@@ -346,10 +369,31 @@ $(document).ready(function () {
         base_wallet_info.html(wallet_info)
     }
 
+    function fetch_section(response) {
+        let page_setting = response.undangan.page_setting
+        let page_title = response.undangan.judul
+        let quote = response.undangan.quote
+
+        let section_acara = page_setting.section.acara
+        if (section_acara) {
+            $('#section_acara_judul').text(section_acara.judul)
+        }
+        if (page_title) {
+            $('.page_title').text(page_title)
+        }
+        if (quote) {
+            $('.quote').text(quote)
+        }
+
+        console.log(page_setting);
+    }
+
+
     $.ajax({
         url: backand_url + `/undangan/${code}/${slug}`,
         method: 'get',
         success: function (response) {
+            console.log(response);
             localStorage.setItem('response', JSON.stringify(response))
             fetch_meta(response)
             fetch_hero(response)
@@ -359,6 +403,7 @@ $(document).ready(function () {
             fetch_acara(response)
             fetch_ucapan()
             fetch_wallet(response)
+            fetch_section(response)
         },
         error: function (response) {
             alertify.error('Terjadi kesalahan');
@@ -436,18 +481,11 @@ $(document).ready(function () {
         let field_wakil_dari = form.find('#wakil_dari').val()
         let field_link_sosmed = form.find('#link_sosmed').val()
         let field_pesan = form.find('#pesan').val()
-        let field_status_kehadiran = form.find('#status_hadir').val()
-        let field_alasan = form.find('#alasan').val()
 
         if (field_pesan == '') {
             alertify.error('Isi pesan singkat');
             return false
         }
-        if (field_status_kehadiran == '') {
-            alertify.error('Isi status kehadiran');
-            return false
-        }
-
 
         let data_ucapan = {
             undangan_id: undangan.id,
@@ -457,27 +495,17 @@ $(document).ready(function () {
             pesan: field_pesan
         }
 
-        let data_kehadiran = {
-            undangan_id: undangan.id,
-            nama_pengirim: response.nama_penerima,
-            status_hadir: field_status_kehadiran,
-            alasan: field_alasan
-        }
-
         $(this).html(`<span class="spinner-border spinner-border-sm"
                       role="status"
                       aria-hidden="true">
                       </span>`)
 
         kirim_ucapan(data_ucapan)
-        kirim_kehadiran(data_kehadiran)
 
         //clear form
         form.find('#wakil_dari').val('')
         form.find('#link_sosmed').val('')
         form.find('#pesan').val('')
-        form.find('#status_hadir').val('yes')
-        form.find('#alasan').val('')
 
     })
 
