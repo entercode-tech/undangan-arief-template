@@ -543,6 +543,23 @@ $(document).ready(function () {
         })
     }
 
+    $('#form_rsvp').find('#status_hadir').change(function () {
+        let val = $(this).val()
+        if (val == 'no') {
+            $('#form_rsvp').find('#alasan').removeClass('d-none')
+        } else {
+            $('#form_rsvp').find('#alasan').addClass('d-none').text('')
+        }
+    })
+
+    $('#form_ucapan').find('#status_hadir').change(function () {
+        let val = $(this).val()
+        if (val == 'no') {
+            $('#form_ucapan').find('#alasan').removeClass('d-none')
+        } else {
+            $('#form_ucapan').find('#alasan').addClass('d-none').text('')
+        }
+    })
 
     $('#form_ucapan').find('#status_hadir').change(function () {
         let val = $(this).val()
