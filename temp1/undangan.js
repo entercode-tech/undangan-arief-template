@@ -4,7 +4,7 @@ $(document).ready(function () {
     const pathElements = path.split('/');
 
     const totalElements = pathElements.length;
-    const code = pathElements[totalElements - 2]; 
+    const code = pathElements[totalElements - 2];
     const slug = pathElements[totalElements - 1];
 
     var meta = $('meta#url')
@@ -118,11 +118,11 @@ $(document).ready(function () {
         if ($("#clock2").length) {
             $('#clock2').countdown(acaraTerpilih.tanggal, function (event) {
                 var $this = $(this).html(event.strftime('' +
-                    '<div class="box"><div><div class="time">%m</div> <span>Bulan</span> </div></div>' +
-                    '<div class="box"><div><div class="time">%D</div> <span>Hari</span> </div></div>' +
-                    '<div class="box"><div><div class="time">%H</div> <span>Jam</span> </div></div>' +
-                    '<div class="box"><div><div class="time">%M</div> <span>Menit</span> </div></div>' +
-                    '<div class="box"><div><div class="time">%S</div> <span>Detik</span> </div></div>'
+                    '<div class="box translate"><div><div class="time">%m</div> <span>Bulan</span> </div></div>' +
+                    '<div class="box translate"><div><div class="time">%D</div> <span>Hari</span> </div></div>' +
+                    '<div class="box translate"><div><div class="time">%H</div> <span>Jam</span> </div></div>' +
+                    '<div class="box translate"><div><div class="time">%M</div> <span>Menit</span> </div></div>' +
+                    '<div class="box translate"><div><div class="time">%S</div> <span>Detik</span> </div></div>'
                 ));
             });
         }
@@ -146,7 +146,7 @@ $(document).ready(function () {
                             </li>
                     `
                 story_html += `
-                <div class="tab-pane fade ${active} ${show}" id="Story${index}">
+                <div class="tab-pane fade translate ${active} ${show}" id="Story${index}">
                             <div class="wpo-story-item">
                                 <div class="wpo-story-img d-none d-md-block">
                                     <img src="https://images.unsplash.com/photo-1514881097029-ef545203c842?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
@@ -268,7 +268,7 @@ $(document).ready(function () {
         let content = ``
         $(undangan.acara).each(function (index, acara) {
             content += `
-            <div class="col col-lg-4 col-md-6 col-12">
+            <div class="col col-lg-4 col-md-6 col-12 translate">
                     <div class="wpo-event-item">
                         <div class="wpo-event-text">
                             <h2>${acara.nama_acara}</h2>
@@ -301,14 +301,13 @@ $(document).ready(function () {
             url: backand_url + `/udg/ucapan?undangan=${undangan.uniq_id}`,
             method: 'get',
             success: function (response) {
-                console.log(response);
                 let data = response.data
                 let base_ucapan = $('#base_ucapan')
                 let content = ``
                 $(data.reverse()).each(function (index, ucapan) {
                     let date = moment(ucapan.created_at).format('DD/MM/YYYY HH:mm');
                     content += `
-                    <li class="mb-3">
+                    <li class="mb-3 translate">
                         <div class="card" style="border-radius:20px;">
                             <div class="card-body">
                             <div class="d-flex justify-content-between">
@@ -346,7 +345,7 @@ $(document).ready(function () {
             let active = index != 0 ? 'd-none' : ''
             wallet_id += `<option value="${wallet.id}">${wallet.nama_wallet}</option>`
             wallet_info += `
-           <div class="p-3 mb-3 wallet_info ${active}" style="border: 2px dotted rgb(88, 88, 88); color: black;" id="wallet_info${wallet.id}"> 
+           <div class="p-3 mb-3 wallet_info translate ${active}" style="border: 2px dotted rgb(88, 88, 88); color: black;" id="wallet_info${wallet.id}"> 
            <div>Nomor : ${wallet.nomor_wallet}</div>
            <div>Atas Nama : ${wallet.atas_nama_wallet}</div>
            </div>
@@ -375,11 +374,9 @@ $(document).ready(function () {
             $('.quote').text(quote)
         }
 
-        console.log(page_setting);
     }
 
     function fetchRsvp(response) {
-        console.log(response);
         let rsvpData = response.undangan.rsvp_setting;
         let form = $('#form_rsvp');
 
@@ -404,8 +401,6 @@ $(document).ready(function () {
 
                     try {
                         let options = JSON.parse(JSON.parse(setting.options));
-
-                        console.log(options);
 
                         // Check if options is an array
                         if (!Array.isArray(options)) {
@@ -451,7 +446,7 @@ $(document).ready(function () {
             }
 
             // Append input element to form
-            form.append($('<div>').append(inputElement));
+            form.append($('<div>').addClass('translate').append(inputElement));
         });
     }
 
@@ -470,8 +465,15 @@ $(document).ready(function () {
         url: backand_url + `/undangan/${code}/${slug}`,
         method: 'get',
         success: function (response) {
-            console.log(response);
+
+            let lang = 'id'
+            if (response.undangan.page_setting.bahasa == 'inggris') {
+                lang = 'en'
+            }
+
+            localStorage.setItem('set_lang', lang)
             localStorage.setItem('response', JSON.stringify(response))
+
             fetch_meta(response)
             fetch_hero(response)
             fetch_story(response)
@@ -644,7 +646,6 @@ $(document).ready(function () {
                 alertify.success('Berhasil mengirim kehadiran');
             },
             error: function (response) {
-                console.log(response);
                 if (response.status == 422) {
                     alertify.error('Formulir tidak lengkap');
                 } else {
@@ -703,8 +704,6 @@ $(document).ready(function () {
             // Assign field value to data object
             data[setting.field_name] = field_value;
         });
-
-        console.log(data);
 
         kirim_kehadiran(data, $(this), form);
 
