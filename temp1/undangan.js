@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+ 
     const path = window.location.pathname;
     const pathElements = path.split('/');
 
