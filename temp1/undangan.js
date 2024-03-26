@@ -529,6 +529,7 @@ $(document).ready(function () {
                 form.find('#jumlah_tamu').val('');
                 form.find('#status_hadir').val('');
                 form.find('#alasan').val('');
+                form.find('#custom').val('');
             },
             error: function (response) {
                 if (response.status == 422) {
