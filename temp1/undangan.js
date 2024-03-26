@@ -3,8 +3,9 @@ $(document).ready(function () {
     const path = window.location.pathname;
     const pathElements = path.split('/');
 
-    const code = pathElements[1];
-    const slug = pathElements[2];
+    const totalElements = pathElements.length;
+    const code = pathElements[totalElements - 2]; 
+    const slug = pathElements[totalElements - 1];
 
     var meta = $('meta#url')
     var base_url = meta.attr('base_url')
