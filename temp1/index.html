@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="wpOceans">
+    <link rel="shortcut icon" type="image/png" href="" id="favicon">
+    <meta id="url" base_url="http://localhost:3001" backand_url="https://inv.pwswift.com/api">
+    <title class="page_title"></title>
+    <link href="http://localhost:3001/css/themify-icons.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/flaticon.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/magnific-popup.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/animate.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/owl.carousel.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/owl.theme.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/slick.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/slick-theme.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/swiper.min.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/nice-select.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/owl.transitions.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/jquery.fancybox.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/odometer-theme-default.css" rel="stylesheet">
+    <link href="http://localhost:3001/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/alertify.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .ajs-success,
+        .ajs-error {
+            color: white !important;
+        }
+
+        .back-to-top {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body class="color2">
+
+    <div class="modal fade" id="opening_modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center py-5">
+                    <span class="page_title">Undangan Pernikahan</span>
+                    <h1 class="mt-2"><span class="nama_panggilan_laki_laki"></span> & <span
+                            class="nama_panggilan_perempuan"></span></h1>
+                    <div class="d-flex justify-content-center">
+                        <div class="col-lg-5 quote">Dengan rasa syukur kepada Tuhan Yang Maha Esa, kami dengan gembira
+                            mengundang Anda untuk berbagi momen bahagia kami saat dua jiwa menjadi satu.</div>
+                    </div>
+                    <a class="theme-btn-s3 mt-3" data-bs-dismiss="modal" aria-label="Close"
+                        onclick="$('#music').click()" style="cursor: pointer;">Lihat Undangan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- start page-wrapper -->
+    <div class="page-wrapper">
+        <!-- start preloader -->
+        <div class="preloader">
+            <div class="vertical-centered-box">
+                <div class="content">
+                    <div class="loader-circle"></div>
+                    <div class="loader-line-mask">
+                        <div class="loader-line"></div>
+                    </div>
+                    <img src="http://localhost:3001/images/preloader.png" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- end preloader -->
+        <!-- Start header -->
+        <header id="header">
+            <div class="wpo-site-header wpo-site-header-s3">
+                <nav class="navigation navbar navbar-expand-lg navbar-light" style="z-index: 999 !important;">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <div class="col-lg-3 col-md-3 col-3 d-lg-none dl-block">
+                                <div class="mobail-menu">
+                                    <button type="button" class="navbar-toggler open-btn">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar first-angle"></span>
+                                        <span class="icon-bar middle-angle"></span>
+                                        <span class="icon-bar last-angle"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6 col-6">
+                                <div class="navbar-header">
+                                    <a class="navbar-brand logo" href="/">Swift</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-1 col-1">
+                                <div id="navbar" class="collapse navbar-collapse navigation-holder">
+                                    <button class="menu-close"><i class="ti-close"></i></button>
+                                    <ul class="nav navbar-nav mb-2 mb-lg-0">
+                                        <li>
+                                            <a href="#couple">Couple</a>
+                                        </li>
+                                        <li>
+                                            <a href="#story">Story</a>
+                                        </li>
+                                        <li>
+                                            <a href="#gallery">Gallery</a>
+                                        </li>
+                                        <li>
+                                            <a href="#event">Acara</a>
+                                        </li>
+                                        <li>
+                                            <a href="#ucapan">Ucapan</a>
+                                        </li>
+                                        <li>
+                                            <a href="#rsvp">RSVP</a>
+                                        </li>
+                                    </ul>
+
+                                </div><!-- end of nav-collapse -->
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-2">
+
+                            </div>
+                        </div>
+                    </div><!-- end of container -->
+                </nav>
+            </div>
+        </header>
+        <!-- end of header -->
+        <!-- start of hero -->
+        <div class="wpo-box-style">
+            <section class="wpo-hero-slider wpo-hero-style-2">
+                <div class="wedding-announcement">
+                    <div class="couple-text">
+                        <div class="shape-1"><img src="http://localhost:3001/images/slider/shape5.png" alt=""></div>
+                        <h2 class="wow slideInUp" data-wow-duration="1s"><span class="nama_panggilan_laki_laki"></span>
+                            &
+                            <span class="nama_panggilan_perempuan"></span></h2>
+                        <p class="wow slideInUp" data-wow-duration="1.8s">Kami Akan Menikah</p>
+                        <div class="shape-2"><img src="http://localhost:3001/images/slider/shape6.png" alt=""></div>
+                    </div>
+                </div>
+                <div class="swiper-container">
+                    <div class="swiper-wrapper" id="swiper_base">
+                    </div>
+                    <!-- end swiper-wrapper -->
+
+                    <!-- swipper controls -->
+                    <div class="swiper-pagination"></div>
+                    <div class="next-prev-btn">
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- end of hero slider -->
+        <!-- start wpo-wedding-date -->
+        <section class="wpo-wedding-time">
+            <h2 class="hidden">some</h2>
+            <div class="container">
+                <div class="row">
+                    <div class="col col-xs-12">
+                        <div class="clock-grids">
+                            <div id="clock2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end container -->
+        </section>
+        <!-- end wpo-wedding-date -->
+        <!-- start couple-section -->
+        <section class="couple-section-s2 section-padding" id="couple">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col col-xs-12">
+                        <div class="couple-area clearfix">
+                            <div class="row">
+                                <div class="col-lg-4" id="pengantin_laki_laki">
+                                    <div class="couple-item">
+                                        <div class="couple-img">
+                                            <img class="foto"
+                                                src="http://localhost:3001/images/profile-placeholder.jpg">
+                                        </div>
+                                        <div class="couple-text">
+                                            <h3 class="nama_lengkap"></h3>
+                                            <p class="latar_belakang"></p>
+                                            <div class="social">
+                                                <ul>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="middle-couple-text">
+                                        <h2>
+                                            <span class="wow slideInUp" data-wow-duration="1s">L</span>
+                                            <span class="wow slideInUp" data-wow-duration="1.2s">o</span>
+                                            <span class="wow slideInUp" data-wow-duration="1.3s">v</span>
+                                            <span class="wow slideInUp" data-wow-duration="1.4s">e</span>
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4" id="pengantin_perempuan">
+                                    <div class="couple-item">
+                                        <div class="couple-img">
+                                            <img class="foto"
+                                                src="http://localhost:3001/images/profile-placeholder.jpg">
+                                        </div>
+                                        <div class="couple-text">
+                                            <h3 class="nama_lengkap"></h3>
+                                            <p class="latar_belakang"></p>
+                                            <div class="social">
+                                                <ul>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end container -->
+        </section>
+        <!-- end couple-section -->
+
+        <!-- start wpo-story-section -->
+        <section class="wpo-story-section section-padding" id="story">
+            <div class="container">
+                <div class="wpo-section-title">
+                    <div class="section-title-img">
+                        <img src="http://localhost:3001/images/section-title.png" alt="">
+                    </div>
+                    <h2>Kisah Cinta Kita</h2>
+                </div>
+                <div class="row align-items-center justify-content-center">
+                    <div class="col col-lg-12 col-12">
+                        <div class="tab-area">
+                            <div class="tablinks">
+                                <ul class="nav nav-tabs" id="tab_story" role="tablist">
+                                </ul>
+                            </div>
+                            <!-- Tab panes -->
+                            <div class="tab-content" id="story_content">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end container -->
+        </section>
+        <!-- end story-section -->
+        <!-- start wpo-video-section -->
+        <section class="wpo-video-section">
+            <h2 class="hidden">some</h2>
+            <a href="" class="video-btn" data-type="iframe"><i class="fi flaticon-play"></i></a>
+        </section>
+        <!-- end wpo-video-section-->
+        <!-- start wpo-portfolio-section -->
+        <section class="wpo-portfolio-section section-padding" id="gallery">
+            <div class="container">
+                <div class="row">
+                    <div class="wpo-section-title">
+                        <div class="section-title-img">
+                            <img src="http://localhost:3001/images/section-title.png" alt="">
+                        </div>
+                        <h2>Gallery</h2>
+                    </div>
+                </div>
+                <div class="sortable-gallery">
+                    <div class="gallery-filters"></div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="portfolio-grids gallery-container clearfix">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- end container -->
+        </section>
+        <!-- end wpo-portfolio-section -->
+
+        <!-- start of wpo-contact-section -->
+
+        <!-- end of wpo-contact-section -->
+        <!-- start wpo-event-section -->
+        <style>
+            .wpo-event-section::after {
+                background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') !important
+            }
+        </style>
+        <section class="wpo-event-section section-padding" id="event">
+            <div class="container">
+                <div class="row mt-5 mt-md-3">
+                    <div class="wpo-section-title">
+                        <div class="section-title-img">
+                            <img src="http://localhost:3001/images/section-title2.png" alt="">
+                        </div>
+                        <h2 id="section_acara_judul">Daftar Acara</h2>
+                    </div>
+                </div>
+                <div class="wpo-event-wrap">
+                    <div class="row" id="daftar_acara">
+
+                    </div>
+                </div>
+
+            </div> <!-- end container -->
+        </section>
+
+        <section class="wpo-contact-section" id="ucapan">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col">
+                        <div class="wpo-contact-section-wrapper">
+                            <div class="wpo-contact-form-area">
+                                <div class="wpo-section-title">
+                                    <div class="section-title-img">
+                                        <img src="http://localhost:3001/images/section-title.png" alt="">
+                                    </div>
+                                    <h2>Kirim Ucapan</h2>
+                                </div>
+                                <form method="post" class="contact-validation-active" id="form_ucapan">
+                                    <div>
+                                        <input type="text" class="form-control" name="pesan" id="pesan"
+                                            placeholder="Pesan Singkat" required>
+                                    </div>
+                                    <div>
+                                        <input type="text" class="form-control" name="wakil_dari" id="wakil_dari"
+                                            placeholder="Wakil Dari (opsional)">
+                                    </div>
+                                    <div>
+                                        <input type="text" class="form-control" name="link_sosmed" id="link_sosmed"
+                                            placeholder="Link Sosmed (opsional)">
+                                    </div>
+                                </form>
+                                <div class="submit-area">
+                                    <button type="button" class="theme-btn-s3" id="send_btn_ucapan">Kirim</button>
+                                </div>
+                                <div class="submit-area">
+                                    <button type="button" class="theme-btn-s3" data-bs-toggle="modal"
+                                        data-bs-target="#modal_amplop">Kirim Amplop</button>
+                                </div>
+                                <div class="border-style"></div>
+                            </div>
+                            <div class="vector-1">
+                                <img src="http://localhost:3001/images/contact/1.png" alt="">
+                            </div>
+                            <div class="vector-2">
+                                <img src="http://localhost:3001/images/contact/2.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col pt-5 mt-5 mt-lg-0 py-lg-5">
+                        <b class="text-center mb-5 d-block">Daftar Ucapan</b>
+                        <ul class="p-0" style="list-style: none; max-height: 750px; overflow-y: scroll;"
+                            id="base_ucapan">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="modal fade" id="modal_amplop" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+            role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title wallet_title" id="">
+                            Kirim Amplop
+                        </h5>
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="form_amplop">
+                            <select name="wallet_id" id="wallet_id" class="form-control shadow-none mb-2" required>
+                            </select>
+                            <div id="base_wallet_info"></div>
+                            <input type="text" class="form-control shadow-none mb-3" name="jumlah_transfer"
+                                id="jumlah_transfer" placeholder="Nominal">
+
+                            <input type="text" class="form-control shadow-none mb-3" name="pesan_singkat"
+                                id="pesan_singkat" placeholder="Pesan Singkat (opsional)">
+                            <label for="">Upload bukti transfer</label>
+                            <input type="file" class="form-control shadow-none" name="bukti_tf" id="bukti_tf">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="theme-btn-s3" id="send_amplop_btn">Kirim</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <section class="wpo-contact-section" id="rsvp">
+            <div class="container">
+              <div class="row row-cols-1 justify-content-center">
+                <div class="col">
+                  <div class="wpo-contact-section-wrapper">
+                    <div class="wpo-contact-form-area">
+                      <div class="wpo-section-title">
+                        <div class="section-title-img">
+                          <img
+                            src="https://inv.pwswift.com/storage/asset-template/1710376127/GROUP-1711310973/images/section-title.png"
+                            alt=""
+                          />
+                        </div>
+                        <h2>Kirim Konfirmasi Kehadiran</h2>
+                      </div>
+                      
+                      <div class="border-style"></div>
+                    </div>
+                    <div class="vector-1">
+                      <img
+                        src="https://inv.pwswift.com/storage/asset-template/1710376127/GROUP-1711310973/images/contact/1.png"
+                        alt=""
+                      />
+                    </div>
+                    <div class="vector-2">
+                      <img
+                        src="https://inv.pwswift.com/storage/asset-template/1710376127/GROUP-1711310973/images/contact/2.png"
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section> -->
+
+        <section class="wpo-portfolio-section section-padding pt-0" id="rsvp">
+            <div class="container">
+                <div class="py-5 px-3 shadow">
+                    <div class="row">
+                        <div class="wpo-section-title">
+                            <div class="section-title-img">
+                                <img src="http://localhost:3001/images/section-title.png" alt="">
+                            </div>
+                            <h2>RSVP</h2>
+                        </div>
+                    </div>
+                    <div class="sortable-gallery d-flex justify-content-center">
+                        <div class="col-12 col-lg-6">
+                            <form method="post" class="contact-validation-active mb-3" id="form_rsvp">
+                            </form>
+                            <div class="submit-area d-flex justify-content-center">
+                                <button type="button" class="theme-btn-s3" id="send_btn_rsvp">
+                                    Kirim
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- end container -->
+        </section>
+
+        <section class="wpo-event-section event-3 section-padding" id="covid">
+            <div class="container">
+                <div class="row">
+                    <div class="wpo-section-title">
+                        <div class="section-title-img">
+                            <img src="https://inv.pwswift.com/storage/asset-template/1710376127/GROUP-1711310973/images/section-title2.png"
+                                alt="" />
+                        </div>
+                        <h2>Wajib Menerapkan Protokol Covid</h2>
+                    </div>
+                </div>
+                <div class="wpo-event-wrap">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-12">
+                            <div class="event-item" id="covid-safety">
+                                <div class="event-text">
+                                    <!-- create protokol covid list -->
+                                    <div class="wpo-event-wrap">
+                                        <div class="row justify-content-center">
+                                            <div class="col-12 col-md-4" style="
+                                background-color: white;
+                                padding: 20px;
+                                border-radius: 10px;
+                              ">
+                                                <div class="event-item covid-safety">
+                                                    <div class="event-text covid-safety">
+                                                        <ul id="covid-safety-list" style="list-style-type: none">
+                                                            <li>
+                                                                <p>1. Memakai Masker</p>
+                                                            </li>
+                                                            <li>
+                                                                <p>2. Mencuci Tangan</p>
+                                                            </li>
+                                                            <li>
+                                                                <p>3. Menjaga Jarak</p>
+                                                            </li>
+                                                            <li>
+                                                                <p>4. Membawa Hand Sanitizer</p>
+                                                            </li>
+                                                            <li>
+                                                                <p>5. Mengecek Suhu Tubuh</p>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <button class="theme-btn-s3 p-2 d-flex justify-content-center align-items-center" id="music"
+            style="position: fixed; bottom: 13px; right: 13px; z-index: 9; width: 50px !important; height: 50px !important;">
+            <i class="fas fa-play icon_music" id="icon_music_play"></i>
+            <i class="fas fa-pause icon_music d-none" id="icon_music_pause"></i>
+        </button>
+
+        <footer class="wpo-site-footer">
+            <div class="wpo-lower-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col col-xs-12">
+                            <p class="copyright"> &copy; 2024 Swift. All Rights Reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end of wpo-site-footer-section -->
+        <!-- color-switcher -->
+        <!-- <div class="color-switcher-wrap">
+            <div class="color-switcher-item">
+                <div class="color-toggle-btn">
+                    <i class="fa fa-cog"></i>
+                </div>
+                <ul id="switcher">
+                    <li class="btn btn1" id="Button1"></li>
+                    <li class="btn btn2" id="Button2"></li>
+                    <li class="btn btn3" id="Button3"></li>
+                    <li class="btn btn4" id="Button4"></li>
+                    <li class="btn btn5" id="Button5"></li>
+                    <li class="btn btn6" id="Button6"></li>
+                    <li class="btn btn7" id="Button7"></li>
+                    <li class="btn btn8" id="Button8"></li>
+                    <li class="btn btn9" id="Button9"></li>
+                    <li class="btn btn10" id="Button10"></li>
+                    <li class="btn btn11" id="Button11"></li>
+                    <li class="btn btn12" id="Button12"></li>
+                </ul>
+            </div>
+        </div> -->
+
+    </div>
+    <!-- end of page-wrapper -->
+
+    <!-- All JavaScript files
+    ================================================== -->
+    <script src="http://localhost:3001/js/jquery.min.js"></script>
+    <script src="http://localhost:3001/js/bootstrap.bundle.min.js"></script>
+    <!-- Plugins for this template -->
+    <script src="http://localhost:3001/js/modernizr.custom.js"></script>
+    <script src="http://localhost:3001/js/jquery.dlmenu.js"></script>
+    <script src="http://localhost:3001/js/jquery-plugin-collection.js"></script>
+    <!-- Custom script for this template -->
+    <script src="http://localhost:3001/js/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="http://localhost:3001/undangan.js"></script>
+    <script>
+        console.clear()
+        let clear_console = setInterval(() => {
+            console.clear()
+        }, 1);
+        setTimeout(() => {
+            clearInterval(clear_console)
+        }, 10000);
+    </script>
+</body>
+
+</html>
