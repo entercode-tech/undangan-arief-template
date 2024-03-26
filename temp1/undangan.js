@@ -322,17 +322,18 @@ $(document).ready(function () {
                 $(data.reverse()).each(function (index, ucapan) {
                     let date = moment(ucapan.created_at).format('DD/MM/YYYY HH:mm');
                     content += `
-                    <li class="mb-3 shadow">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
+                    <li class="mb-3">
+                        <div class="card" style="border-radius:20px;">
+                            <div class="card-body">
+                            <div class="d-flex justify-content-between">
                                 <div class="d-flex gap-2 align-items-center">
                                     <img class="rounded-circle" src="${base_url}/images/profile-placeholder.jpg"
                                         style="width: 20px; height: 20px; border: 1px solid rgb(126, 126, 126);">
-                                    <b>${ucapan.nama_pengirim}</b>
+                                    <span>${ucapan.nama_pengirim}</span>
                                 </div>
                                 <small>${date}</small>
                             </div>
-                            <div class="card-body">
+                            <hr>
                                 ${ucapan.pesan}
                             </div>
                         </div>
@@ -381,6 +382,9 @@ $(document).ready(function () {
         if (page_title) {
             $('.page_title').text(page_title)
         }
+        if (page_setting.section.wallet) {
+            $('.wallet_title').text(page_setting.section.wallet.judul)
+        }
         if (quote) {
             $('.quote').text(quote)
         }
@@ -389,6 +393,7 @@ $(document).ready(function () {
     }
 
     function fetchRsvp(response) {
+        console.log(response);
         let rsvpData = response.undangan.rsvp_setting;
         let form = $('#form_rsvp');
     
@@ -398,12 +403,16 @@ $(document).ready(function () {
         // Loop through rsvp setting data
         rsvpData.forEach(setting => {
             let inputElement;
+            let additional_place = ''
+            if (setting.data_name == 'custom' || setting.data_name == 'alasan') {
+                additional_place = ' (opsional)'
+            }
             switch (setting.element) {
                 case 'select':
                     inputElement = $('<select>', {
                         name: setting.field_name,
                         id: setting.field_name,
-                        class: 'form-control',
+                        class: 'form-control mb-3 shadow-none',
                         required: true
                     });
     
@@ -416,7 +425,12 @@ $(document).ready(function () {
                         if (!Array.isArray(options)) {
                             throw new Error('Parsed options is not an array');
                         }
-    
+                        inputElement.append($('<option>', {
+                            value: '',
+                            text: setting.label+additional_place,
+                            selected: true,
+                            disabled:true
+                        }));
                         options.forEach(option => {
                             inputElement.append($('<option>', {
                                 value: option.value,
@@ -431,8 +445,8 @@ $(document).ready(function () {
                     inputElement = $('<textarea>', {
                         name: setting.field_name,
                         id: setting.field_name,
-                        class: 'form-control',
-                        placeholder: setting.label,
+                        class: 'form-control mb-3 shadow-none',
+                        placeholder: setting.label+additional_place,
                         required: true
                     });
                     break;
@@ -441,8 +455,8 @@ $(document).ready(function () {
                         type: 'text',
                         name: setting.field_name,
                         id: setting.field_name,
-                        class: 'form-control',
-                        placeholder: setting.label,
+                        class: 'form-control mb-3 shadow-none',
+                        placeholder: setting.label+additional_place,
                         required: true
                     });
                     break;
@@ -542,33 +556,6 @@ $(document).ready(function () {
             }
         })
     }
-
-    $('#form_rsvp').find('#status_hadir').change(function () {
-        let val = $(this).val()
-        if (val == 'no') {
-            $('#form_rsvp').find('#alasan').removeClass('d-none')
-        } else {
-            $('#form_rsvp').find('#alasan').addClass('d-none').text('')
-        }
-    })
-
-    $('#form_ucapan').find('#status_hadir').change(function () {
-        let val = $(this).val()
-        if (val == 'no') {
-            $('#form_ucapan').find('#alasan').removeClass('d-none')
-        } else {
-            $('#form_ucapan').find('#alasan').addClass('d-none').text('')
-        }
-    })
-
-    $('#form_ucapan').find('#status_hadir').change(function () {
-        let val = $(this).val()
-        if (val == 'no') {
-            $('#form_ucapan').find('#alasan').removeClass('d-none')
-        } else {
-            $('#form_ucapan').find('#alasan').addClass('d-none').text('')
-        }
-    })
 
 
     $('#send_btn_ucapan').click(function () {
@@ -704,21 +691,21 @@ $(document).ready(function () {
                 case 'status_hadir':
                     field_value = form.find('#status_hadir').val();
                     break;
-                case 'pesan':
-                    field_value = form.find('#pesan').val();
-                    break;
                 case 'alasan':
                     field_value = form.find('#alasan').val();
                     break;
                 case 'jumlah_tamu':
                     field_value = form.find('#jumlah_tamu').val();
                     break;
+                case 'custom':
+                    field_value = form.find('#custom').val();
+                    break;
                 default:
                     break;
             }
     
             // Validate if field is required
-            if (field_value === '' && setting.field_name !== 'pesan' && setting.field_name !== 'alasan') {
+            if (field_value === '' && setting.field_name !== 'custom' && setting.field_name !== 'alasan') {
                 alertify.error('Isi ' + setting.label);
                 return false;
             }
@@ -726,13 +713,14 @@ $(document).ready(function () {
             // Assign field value to data object
             data[setting.field_name] = field_value;
         });
+
+        console.log(data);
     
         kirim_kehadiran(data,$(this));
     
         // Clear form
         form.find('#jumlah_tamu').val('');
-        form.find('#pesan').val('');
-        form.find('#status_hadir').val('yes');
+        form.find('#status_hadir').val('');
         form.find('#alasan').val('');
     });
 
