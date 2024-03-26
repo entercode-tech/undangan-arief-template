@@ -38,6 +38,22 @@ $(document).ready(function () {
         return hasil;
     }
 
+    function traverseAndProcess(obj) {
+        const output = {};
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const value = obj[key];
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    output[key] = traverseAndProcess(value);
+                } else {
+                    output[key] = value;
+                }
+            }
+        }
+        return output;
+    }
+
+
     function fetch_meta(response) {
         let undangan = response.undangan
         let pengantin = undangan.pengantin
@@ -50,7 +66,7 @@ $(document).ready(function () {
                 pengantin_perempuan = pengantin.nama_panggilan
             }
         });
-        $('#page_title').text(pengantin_laki_laki + ' & ' + pengantin_perempuan)
+        $('.page_title').text(pengantin_laki_laki + ' & ' + pengantin_perempuan)
         $('#favicon').attr('href', undangan.foto_sampul)
     }
 
@@ -104,7 +120,7 @@ $(document).ready(function () {
                 .latar_belakang)
 
             if (pengantin.sosmeds.length) {
-                let smd =``
+                let smd = ``
                 $(pengantin.sosmeds).each(function (i, sosmed) {
                     smd += `
                     <li><a href="${sosmed.link}"><i class="ti-${sosmed.jenis}"></i></a></li>
@@ -161,12 +177,12 @@ $(document).ready(function () {
                                 </div>
                                 <div class="wpo-story-content">
                                     <div class="wpo-story-content-inner">
-                                        <span><img src="assets/images/story/2.png" alt=""></span>
+                                        <span><img src="${base_url}/images/story/2.png" alt=""></span>
                                         <h2>${story.judul}</h2>
                                         <span>${story.dari_tahun} - ${story.sampai_tahun}</span>
                                         <p>${story.cerita}</p>
                                         <div class="border-shape">
-                                            <img src="assets/images/story/shape.jpg" alt="">
+                                            <img src="${base_url}/images/story/shape.jpg" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -281,12 +297,19 @@ $(document).ready(function () {
                         <div class="wpo-event-text">
                             <h2>${acara.nama_acara}</h2>
                             <ul>
-                                <li>${ubahFormatTanggal(acara.tanggal)}</li>
-                                <li>${acara.alamat}</li>
+                                <li>${ubahFormatTanggal(acara.tanggal)}</li>`
 
-                                <li> <a class="popup-gmaps"
-                                        href="${acara.link_map}">Lihat Lokasi</a></li>
-                            </ul>
+
+            if (acara.alamat != null) {
+                content += `<li>${acara.alamat}</li>`
+            }
+            if (acara.link_map != null) {
+                content += `<li> <a class="popup-gmaps"
+                                        href="${acara.link_map}">Lihat Lokasi</a></li>`
+            }
+
+
+            content += `</ul>
                         </div>
                     </div>
                 </div>
@@ -309,17 +332,18 @@ $(document).ready(function () {
                 $(data.reverse()).each(function (index, ucapan) {
                     let date = moment(ucapan.created_at).format('DD/MM/YYYY HH:mm');
                     content += `
-                    <li class="mb-3 shadow">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
+                    <li class="mb-3">
+                        <div class="card" style="border-radius:20px;">
+                            <div class="card-body">
+                            <div class="d-flex justify-content-between">
                                 <div class="d-flex gap-2 align-items-center">
                                     <img class="rounded-circle" src="${base_url}/images/profile-placeholder.jpg"
                                         style="width: 20px; height: 20px; border: 1px solid rgb(126, 126, 126);">
-                                    <b>${ucapan.nama_pengirim}</b>
+                                    <span>${ucapan.nama_pengirim}</span>
                                 </div>
                                 <small>${date}</small>
                             </div>
-                            <div class="card-body">
+                            <hr>
                                 ${ucapan.pesan}
                             </div>
                         </div>
@@ -437,6 +461,7 @@ $(document).ready(function () {
         url: backand_url + `/undangan/${code}/${slug}`,
         method: 'get',
         success: function (response) {
+            console.log(response);
             localStorage.setItem('response', JSON.stringify(response))
             fetch_meta(response)
             fetch_hero(response)
@@ -478,13 +503,20 @@ $(document).ready(function () {
         })
     }
 
-    function kirim_kehadiran(data) {
+    function kirim_kehadiran(data,btn) {
         $.ajax({
             url: backand_url + '/udg/kehadiran',
             data: data,
             method: 'post',
+            beforeSend: function(){
+                btn.html(`<span class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true">
+                </span>`);
+            },
             success: function (response) {
                 alertify.success('Berhasil mengirim kehadiran');
+                btn.html('Kirim')
             },
             error: function (response) {
                 if (response.status == 422) {
@@ -492,6 +524,7 @@ $(document).ready(function () {
                 } else {
                     alertify.error('Gagal mengirim ucapan');
                 }
+                btn.html('Kirim')
             },
             complete: function () {
                 $('#send_btn_rsvp').html('Kirim')
@@ -507,16 +540,6 @@ $(document).ready(function () {
             $('#form_rsvp').find('#alasan').addClass('d-none').text('')
         }
     })
-
-    $('#form_ucapan').find('#status_hadir').change(function () {
-        let val = $(this).val()
-        if (val == 'no') {
-            $('#form_ucapan').find('#alasan').removeClass('d-none')
-        } else {
-            $('#form_ucapan').find('#alasan').addClass('d-none').text('')
-        }
-    })
-
 
     $('#send_btn_ucapan').click(function () {
         let form = $('#form_ucapan')
@@ -542,7 +565,6 @@ $(document).ready(function () {
             link_sosmed: field_link_sosmed,
             pesan: field_pesan
         }
-
 
         $(this).html(`<span class="spinner-border spinner-border-sm"
                       role="status"
@@ -686,6 +708,63 @@ $(document).ready(function () {
             }
         })
     })
+
+    $('#send_btn_rsvp').click(function () {
+        let form = $('#form_rsvp');
+        let response = JSON.parse(localStorage.getItem('response'));
+        let undangan = response.undangan;
+    
+        let nama_pengirim = '';
+        $(undangan.bagikan_ke).each(function (index, bagikan) {
+            if (bagikan.slug == slug) {
+                nama_pengirim = bagikan.nama_pengirim;
+            }
+        });
+    
+        let data = {
+            undangan_id: undangan.id,
+            nama_pengirim: response.nama_penerima,
+        };
+    
+        // Iterate over rsvp_setting to get form data
+        $(undangan.rsvp_setting).each(function (index, setting) {
+            let field_value;
+            switch (setting.field_name) {
+                case 'status_hadir':
+                    field_value = form.find('#status_hadir').val();
+                    break;
+                case 'alasan':
+                    field_value = form.find('#alasan').val();
+                    break;
+                case 'jumlah_tamu':
+                    field_value = form.find('#jumlah_tamu').val();
+                    break;
+                case 'custom':
+                    field_value = form.find('#custom').val();
+                    break;
+                default:
+                    break;
+            }
+    
+            // Validate if field is required
+            if (field_value === '' && setting.field_name !== 'custom' && setting.field_name !== 'alasan') {
+                alertify.error('Isi ' + setting.label);
+                return false;
+            }
+    
+            // Assign field value to data object
+            data[setting.field_name] = field_value;
+        });
+
+        console.log(data);
+    
+        kirim_kehadiran(data,$(this));
+    
+        // Clear form
+        form.find('#jumlah_tamu').val('');
+        form.find('#status_hadir').val('');
+        form.find('#alasan').val('');
+    });
 
 
     //music
