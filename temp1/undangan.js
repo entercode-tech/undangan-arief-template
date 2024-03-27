@@ -276,10 +276,10 @@ $(document).ready(function () {
                                 <li>${ubahFormatTanggal(acara.tanggal)}</li>`
 
 
-            if (acara.alamat != null) {
+            if (acara.alamat != 'null') {
                 content += `<li>${acara.alamat}</li>`
             }
-            if (acara.link_map != null) {
+            if (acara.link_map != 'null') {
                 content += `<li> <a class="popup-gmaps"
                                         href="${acara.link_map}">Lihat Lokasi</a></li>`
             }
@@ -460,20 +460,30 @@ $(document).ready(function () {
         }
     }
 
+    function fetch_page_setting(response) {
+        let lang = 'id'
+        if (response.undangan.page_setting.bahasa == 'inggris') {
+            lang = 'en'
+        }
+        localStorage.setItem('set_lang', lang)
+
+        let page_setting = response.undangan.page_setting
+        if (page_setting.urutan_pengantin == 'female_first') {
+            $('#pengantin_laki_laki').addClass('order-3')
+            $('#middle_couple_text').addClass('order-2')
+        }
+
+    }
+
 
     $.ajax({
         url: backand_url + `/undangan/${code}/${slug}`,
         method: 'get',
         success: function (response) {
 
-            let lang = 'id'
-            if (response.undangan.page_setting.bahasa == 'inggris') {
-                lang = 'en'
-            }
 
-            localStorage.setItem('set_lang', lang)
             localStorage.setItem('response', JSON.stringify(response))
-
+            fetch_page_setting(response)
             fetch_meta(response)
             fetch_hero(response)
             fetch_story(response)
